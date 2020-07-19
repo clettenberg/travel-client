@@ -1,37 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { Grommet, List } from 'grommet';
-import axios from 'axios';
+import React, { useEffect } from "react";
+import { Grommet } from "grommet";
+import mapboxgl, { MapboxOptions } from "mapbox-gl";
+
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN || "add-a-key";
 
 const theme = {
   global: {
     font: {
-      family: 'Roboto',
-      size: '18px',
-      height: '20px',
+      family: "Roboto",
+      size: "18px",
+      height: "20px",
     },
   },
 };
 
 function App() {
-  const [data, setData] = useState({trips: []});
-
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('/api/trips');
-      setData(result.data);
-    }
+    const options: MapboxOptions = {
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [5, 34],
+      zoom: 2,
+    };
 
-    fetchData();
-  }, [])
+    const map = new mapboxgl.Map(options);
+    return () => {
+      map.remove();
+    };
+  }, []);
 
   return (
     <Grommet theme={theme}>
-      <div className="App">
-        <List
-          primaryKey="title"
-          data={data.trips.map(trip => ({ title: trip["title"] }))}
-        />
-      </div>
+      <div
+        id="map"
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          width: "100%",
+        }}
+      />
     </Grommet>
   );
 }
