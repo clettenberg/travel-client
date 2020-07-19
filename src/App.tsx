@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Grommet, List } from 'grommet';
 import axios from 'axios';
-import './App.css';
+
+const theme = {
+  global: {
+    font: {
+      family: 'Roboto',
+      size: '18px',
+      height: '20px',
+    },
+  },
+};
 
 function App() {
   const [data, setData] = useState({trips: []});
@@ -15,9 +25,14 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
-      {data.trips.map(trip => trip["title"])}
-    </div>
+    <Grommet theme={theme}>
+      <div className="App">
+        <List
+          primaryKey="title"
+          data={data.trips.map(trip => ({ title: trip["title"] }))}
+        />
+      </div>
+    </Grommet>
   );
 }
 
